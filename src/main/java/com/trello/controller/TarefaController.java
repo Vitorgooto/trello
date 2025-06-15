@@ -45,6 +45,25 @@ public class TarefaController {
         return ResponseEntity.badRequest().build();
     }
 
+    @GetMapping
+    public ResponseEntity<List<TarefaDTO>> listarTodasTarefas() {
+        List<Tarefa> tarefas = tarefaService.listarTodasTarefas();
+        List<TarefaDTO> tarefasDTO = tarefas.stream()
+            .map(tarefa -> {
+                TarefaDTO dto = new TarefaDTO();
+                dto.setId(tarefa.getId());
+                dto.setTitulo(tarefa.getTitulo());
+                dto.setDescricao(tarefa.getDescricao());
+                dto.setDataCriacao(tarefa.getDataCriacao());
+                dto.setPrazo(tarefa.getPrazo());
+                dto.setStatus(tarefa.getStatus());
+                dto.setUsuarioId(tarefa.getUsuario().getId());
+                return dto;
+            })
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(tarefasDTO);
+    }
+
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<List<TarefaDTO>> listarTarefasPorUsuario(@PathVariable Long usuarioId) {
         List<Tarefa> tarefas = tarefaService.listarTarefasPorUsuario(usuarioId);

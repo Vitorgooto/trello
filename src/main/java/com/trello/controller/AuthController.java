@@ -23,16 +23,33 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthDTO authDTO) {
+        System.out.println("Tentativa de login - Email: " + authDTO.getEmail());
+        
+        if (authDTO.getSenha() == null || authDTO.getSenha().trim().isEmpty()) {
+            System.out.println("Senha vazia ou nula");
+            return ResponseEntity.badRequest().body("A senha é obrigatória");
+        }
+
         Usuario usuario = usuarioService.buscarPorEmail(authDTO.getEmail())
                 .orElse(null);
 
-        if (usuario != null && usuario.getSenha().equals(authDTO.getSenha())) {
+        if (usuario == null) {
+            System.out.println("Usuário não encontrado");
+            return ResponseEntity.badRequest().body("Credenciais inválidas");
+        }
+
+        System.out.println("Usuário encontrado - Senha do usuário: " + usuario.getSenha());
+        System.out.println("Senha fornecida: " + authDTO.getSenha());
+
+        if (usuario.getSenha() != null && usuario.getSenha().equals(authDTO.getSenha())) {
             String token = jwtTokenService.generateToken(usuario.getEmail());
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
+            System.out.println("Login bem sucedido - Token gerado");
             return ResponseEntity.ok(response);
         }
 
+        System.out.println("Senha incorreta");
         return ResponseEntity.badRequest().body("Credenciais inválidas");
     }
 } 

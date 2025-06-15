@@ -29,6 +29,10 @@ public class TarefaService {
         return null;
     }
 
+    public List<Tarefa> listarTodasTarefas() {
+        return tarefaRepository.findAll();
+    }
+
     public List<Tarefa> listarTarefasPorUsuario(Long usuarioId) {
         Optional<Usuario> usuario = usuarioService.buscarPorId(usuarioId);
         return usuario.map(tarefaRepository::findByUsuario).orElse(List.of());

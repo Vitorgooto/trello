@@ -23,7 +23,11 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioDTO> criarUsuario(@RequestBody UsuarioDTO usuarioDTO) {
+    public ResponseEntity<?> criarUsuario(@RequestBody UsuarioDTO usuarioDTO) {
+        if (usuarioDTO.getSenha() == null || usuarioDTO.getSenha().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("A senha é obrigatória");
+        }
+
         Usuario usuario = new Usuario();
         usuario.setNome(usuarioDTO.getNome());
         usuario.setEmail(usuarioDTO.getEmail());
@@ -68,7 +72,11 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioDTO> atualizarUsuario(@PathVariable Long id, @RequestBody UsuarioDTO usuarioDTO) {
+    public ResponseEntity<?> atualizarUsuario(@PathVariable Long id, @RequestBody UsuarioDTO usuarioDTO) {
+        if (usuarioDTO.getSenha() == null || usuarioDTO.getSenha().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("A senha é obrigatória");
+        }
+
         Usuario usuario = new Usuario();
         usuario.setNome(usuarioDTO.getNome());
         usuario.setEmail(usuarioDTO.getEmail());
